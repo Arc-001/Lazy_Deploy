@@ -1,6 +1,8 @@
 # lazy deploy
 
-This project is a FastAPI application designed for quick deployment. It includes scripts for setting up the environment and managing firewall rules.
+This project is a set of scripts designed for quick deployment. It includes scripts for setting up the environment and managing firewall rules.
+This is just for developement and must not be used for production as security was not considered while making these scripts.
+Ergo... I would reiterate, use at your own risk
 
 ## Project Structure
 
@@ -8,7 +10,7 @@ This project is a FastAPI application designed for quick deployment. It includes
 .
 ├── .gitignore
 ├── docker_setup.sh
-├── main.py
+├── main.py (entry point to api)
 ├── setup.sh
 └── README.md
 ```

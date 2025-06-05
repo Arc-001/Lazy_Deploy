@@ -117,28 +117,37 @@ total_config=""
 
 for subdomain in "${!subdomain_port_map[@]}"; do
     port="${subdomain_port_map[$subdomain]}"
-    total_config+="server {
-        listen 80;
-        server_name $subdomain.$domain;
+    current_server_config=$(cat <<EOF
+server {
+    listen 80;
+    server_name $subdomain.$domain;
 
-        location / {
-            proxy_pass http://localhost:$port;
-            proxy_set_header Host \$host;
-            proxy_set_header X-Real-IP \$remote_addr;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto \$scheme;
-        }
-    }\n\n"
+    location / {
+        proxy_pass http://localhost:$port;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+
+EOF
+)
+    total_config+="$current_server_config"
 done
 
 echo "making a link of this new config as given below please confirm"
-echo -e "$total_config"
+printf "%s" "$total_config"
 
 read -p "Do you want to proceed with this configuration? (y/n): " confirm
 
 if [[ "$confirm" =~ ^[Yy]$ ]]; then
     echo "Creating Nginx configuration file..."
-    sudo bash -c "echo -e \"$total_config\" > /etc/nginx/sites-available/reverse_proxy.conf"
+    
+    # sudo bash -c "echo -e \"$total_config\" > /etc/nginx/sites-available/reverse_proxy.conf"
+
+    printf "%s" "$total_config" | sudo tee /etc/nginx/sites-available/reverse_proxy.conf > /dev/null
+
     echo "Linking the configuration file to sites-enabled..."
     sudo ln -sf /etc/nginx/sites-available/reverse_proxy.conf /etc/nginx/sites-enabled/
     
@@ -194,9 +203,3 @@ done
 echo "https://$domain"
 echo "Please ensure your DNS records are correctly set up for the subdomains."
 echo "--------------EOF------------"
-
-
-
-
-
-  

@@ -2,7 +2,6 @@
 
 #################################################################
 # VNC + XFCE + HTTP Auth Complete Setup Script for OCI Ubuntu
-# Consolidated version with all fixes and dependencies
 # Date: 2025-10-02
 # User: Arc-001
 #################################################################

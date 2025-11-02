@@ -1,0 +1,133 @@
+# Podman Compose file for development environment
+# Run with: podman-compose up -d
+
+version: "3.9"
+
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  networks:
+    - dev-network
+
+x-healthcheck-http: &healthcheck-http
+  test: ["CMD-SHELL", "curl -fsS http://localhost:8080/ || exit 1"]
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 40s
+
+x-healthcheck-redis: &healthcheck-redis
+  test: ["CMD", "redis-cli", "ping"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+
+x-healthcheck-db: &healthcheck-db
+  interval: 10s
+  timeout: 5s
+  retries: 5
+
+services:
+  # Main code-server service (VS Code in browser)
+  code-server:
+    <<: *service-defaults
+    image: codercom/code-server:latest
+    # Note: container_name is optional; podman compose will create predictable names
+    container_name: vscode-container
+    # Podman may ignore some restart policies; keep for compatibility
+    ports:
+      - "8080:8080"
+    environment:
+      - PASSWORD=${CODE_SERVER_PASSWORD:-changeme123}
+      - SUDO_PASSWORD=${SUDO_PASSWORD:-changeme123}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+    volumes:
+      # Persist VS Code configuration and extensions
+      # Append :Z to ensure SELinux relabel for rootless podman systems (safe to include on non-SELinux)
+      - ./config:/home/coder/.config:Z
+      # Persist project files
+      - ./projects:/home/coder/projects:Z
+      # NOTE: docker socket mount removed for Podman setups. If you need Docker-in-Docker, run Docker
+      # on the host and mount /var/run/docker.sock manually (not recommended for podman).
+    healthcheck: *healthcheck-http
+
+  # Optional: PostgreSQL database for development
+  postgres:
+    <<: *service-defaults
+    image: postgres:15-alpine
+    container_name: dev-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-devuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-devpass}
+      - POSTGRES_DB=${POSTGRES_DB:-devdb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      <<: *healthcheck-db
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-devuser}"]
+
+  # Optional: Redis for caching/sessions
+  redis:
+    <<: *service-defaults
+    image: redis:7-alpine
+    container_name: dev-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck: *healthcheck-redis
+
+  # Optional: MongoDB for NoSQL projects
+  mongodb:
+    <<: *service-defaults
+    image: mongo:6
+    container_name: dev-mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD:-adminpass}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      <<: *healthcheck-db
+      test: ["CMD-SHELL", "mongosh --quiet localhost:27017/test --eval 'db.runCommand(\"ping\").ok' | grep -q 1"]
+
+  # Optional: Nginx reverse proxy with SSL
+  nginx:
+    <<: *service-defaults
+    image: nginx:alpine
+    container_name: vscode-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # SELinux relabel :Z so podman can read host files when SELinux is enabled
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z
+      - ./nginx/ssl:/etc/nginx/ssl:ro,Z
+    depends_on:
+      code-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Note: Portainer and docker.sock mounts are intentionally omitted in the Podman compose file.
+
+networks:
+  dev-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  mongodb-data:
+    driver: local

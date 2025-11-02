@@ -1,6 +1,3 @@
-version: "3"
-
-
 # Define the network to avoid default bridge network
 networks:
   gitea:

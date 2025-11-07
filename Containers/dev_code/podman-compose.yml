@@ -1,8 +1,6 @@
 # Podman Compose file for development environment
 # Run with: podman-compose up -d
 
-version: "3.9"
-
 x-service-defaults: &service-defaults
   restart: unless-stopped
   networks:
@@ -39,9 +37,10 @@ services:
     environment:
       - PASSWORD=${CODE_SERVER_PASSWORD:-changeme123}
       - SUDO_PASSWORD=${SUDO_PASSWORD:-changeme123}
-      - PUID=1000
-      - PGID=1000
+      - PUID=0
+      - PGID=0
       - TZ=Asia/Kolkata
+    user: "0:0"
     volumes:
       # Persist VS Code configuration and extensions
       # Append :Z to ensure SELinux relabel for rootless podman systems (safe to include on non-SELinux)

@@ -1,0 +1,836 @@
+\documentclass[12pt, a4paper]{report}
+
+% ==============================================================================
+% PREAMBLE: PACKAGES AND DOCUMENT SETUP
+% ==============================================================================
+
+% --- Page Layout and Typography ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{setspace}
+\onehalfspacing % 1.5 line spacing for readability
+\usepackage{lmodern} % Use a modern font
+\usepackage{microtype} % Improves typography
+
+% --- Document Structure and Headers ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % Clear all header and footer fields
+\fancyhead[L]{\nouppercase{\leftmark}} % Chapter name on the left
+\fancyfoot[C]{\thepage} % Page number in the center
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancypagestyle{plain}{ % Style for chapter start pages
+  \fancyhf{} % Clear all fields
+  \fancyfoot[C]{\thepage} % Just page number
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
+
+% --- Graphics and Tables ---
+\usepackage{graphicx}
+% \graphicspath{{images/}} % Set path for images - Commented out for direct compilation. User should create an 'images' folder.
+\usepackage{float}
+\usepackage[labelfont=bf, singlelinecheck=false]{caption}
+\usepackage{booktabs} % For professional quality tables
+\usepackage{longtable}
+
+% --- Code Listings ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% --- Mathematics and Symbols ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% --- References and Hyperlinks ---
+\usepackage[backend=biber, style=ieee, sorting=none]{biblatex}
+\addbibresource{references.bib} % The .bib file
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Capstone Project Report},
+    pdfpagemode=FullScreen,
+}
+
+% --- Custom Commands ---
+\newcommand{\projecttitle}{Containerized Development Environments with Docker and Podman}
+\newcommand{\studentname}{[Your Name]}
+\newcommand{\studentid}{[Your Student ID]}
+\newcommand{\supervisor}{[Your Supervisor's Name]}
+\newcommand{\university}{[Your University Name]}
+\newcommand{\department}{[Your Department Name]}
+\newcommand{\degree}{[Your Degree Program]}
+\newcommand{\submissiondate}{\today}
+
+
+% ==============================================================================
+% BIBLIOGRAPHY DATA (EMBEDDED FOR OVERLEAF COMPATIBILITY)
+% ==============================================================================
+\begin{filecontents*}{references.bib}
+@book{turnbull2014docker,
+  title={The Docker Book: Containerization is the new virtualization},
+  author={Turnbull, James},
+  year={2014},
+  publisher={James Turnbull}
+}
+
+@article{merkel2014docker,
+  title={Docker: lightweight Linux containers for consistent development and deployment},
+  author={Merkel, Dirk},
+  journal={Linux journal},
+  volume={2014},
+  number={239},
+  pages={2},
+  year={2014}
+}
+
+@book{walsh2020podman,
+  title={Podman in Action},
+  author={Walsh, Daniel},
+  year={2020},
+  publisher={Manning Publications}
+}
+
+@misc{codeserver_docs,
+    author = {Coder},
+    title = {code-server Documentation},
+    howpublished = {\url{https://coder.com/docs/code-server/latest}},
+    year = {2024},
+    note = {Accessed: \today}
+}
+
+@book{tanenbaum2011computer,
+  title={Computer networks},
+  author={Tanenbaum, Andrew S and Wetherall, David J},
+  year={2011},
+  publisher={Pearson Education, Inc.}
+}
+
+@book{martin2008clean,
+  title={Clean Code: A Handbook of Agile Software Craftsmanship},
+  author={Martin, Robert C},
+  year={2008},
+  publisher={Prentice Hall}
+}
+
+@misc{docker_compose_docs,
+    author = {Docker Inc.},
+    title = {Docker Compose Overview},
+    howpublished = {\url{https://docs.docker.com/compose/}},
+    year = {2024},
+    note = {Accessed: \today}
+}
+\end{filecontents*}
+
+
+% ==============================================================================
+% DOCUMENT START
+% ==============================================================================
+\begin{document}
+
+% --- Title Page ---
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Huge\bfseries \projecttitle\par}
+    
+    \vspace{1.5cm}
+    
+    {\Large A Capstone Project Report\par}
+    
+    \vspace{1.5cm}
+    
+    Submitted in partial fulfillment of the requirements for the degree of
+    
+    \vspace{0.5cm}
+    
+    {\Large \degree\par}
+    
+    \vspace{2cm}
+    
+    {\large by\par}
+    
+    \vspace{0.5cm}
+    
+    {\Large \studentname\par}
+    {\large (\studentid)\par}
+    
+    \vspace{3cm}
+    
+    Under the supervision of
+    
+    \vspace{0.5cm}
+    
+    {\Large \supervisor\par}
+    
+    \vspace{\fill}
+    
+    % {\includegraphics[width=0.2\textwidth]{images/university_logo.png}\par} % Placeholder for logo. Create an "images" folder and add your logo.
+    \vspace{0.5cm}
+    
+    {\Large \department\par}
+    {\Large \university\par}
+    
+    \vspace{1cm}
+    
+    {\large \submissiondate\par}
+    
+\end{titlepage}
+
+\newpage
+% --- Front Matter ---
+\pagenumbering{roman}
+
+% --- Abstract ---
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{ABSTRACT}
+The modern software development lifecycle is fraught with challenges related to environment consistency, dependency management, and portability. The infamous "it works on my machine" problem leads to significant delays, integration issues, and reduced developer productivity. This project addresses these challenges by designing and implementing a comprehensive, containerized development environment using Docker and Podman.
+
+The core of the project is a modular, multi-service architecture defined using Docker Compose and a compatible Podman Compose configuration. This environment provides developers with a browser-based Visual Studio Code IDE (via `code-server`), pre-configured with essential supporting services including PostgreSQL for relational data, Redis for caching, MongoDB for NoSQL databases, and an Nginx reverse proxy for secure access and routing. The entire stack is designed to be platform-agnostic, reproducible with a single command, and easily extensible.
+
+This report details the system architecture, the design of individual service modules, and the step-by-step process of containerizing an application within this environment. It presents a deep dive into creating optimized container images using multi-stage builds, managing the container lifecycle, and integrating with version control and container registries. Furthermore, the project explores the nuances of using both Docker and its daemonless alternative, Podman, highlighting compatibility challenges and solutions, such as SELinux context labeling and rootless container considerations. Key challenges encountered during implementation, such as data persistence strategies, inter-container networking, and security hardening, are discussed along with the effective solutions applied. The result is a robust, portable, and efficient development ecosystem that streamlines the development workflow, enhances collaboration, and bridges the gap between development and production environments.
+
+\newpage
+
+% --- Table of Contents ---
+\tableofcontents
+\newpage
+
+% --- List of Figures ---
+\listoffigures
+\newpage
+
+% --- List of Tables ---
+\listoftables
+\newpage
+
+% --- Abbreviations ---
+\chapter*{ABBREVIATIONS}
+\addcontentsline{toc}{chapter}{ABBREVIATIONS}
+\begin{itemize}
+    \item \textbf{AI}: Artificial Intelligence
+    \item \textbf{API}: Application Programming Interface
+    \item \textbf{CI/CD}: Continuous Integration / Continuous Deployment
+    \item \textbf{CLI}: Command-Line Interface
+    \item \textbf{CPU}: Central Processing Unit
+    \item \textbf{DNS}: Domain Name System
+    \item \textbf{DRY}: Don't Repeat Yourself
+    \item \textbf{ECR}: Elastic Container Registry (AWS)
+    \item \textbf{GCR}: Google Container Registry (GCP)
+    \item \textbf{Git}: A distributed version control system
+    \item \textbf{GUI}: Graphical User Interface
+    \item \textbf{HTTP}: Hypertext Transfer Protocol
+    \item \textbf{HTTPS}: Hypertext Transfer Protocol Secure
+    \item \textbf{IDE}: Integrated Development Environment
+    \item \textbf{LLM}: Large Language Model
+    \item \textbf{ML}: Machine Learning
+    \item \textbf{MVC}: Model-View-Controller
+    \item \textbf{NoSQL}: Not only SQL
+    \item \textbf{OOP}: Object-Oriented Programming
+    \item \textbf{OS}: Operating System
+    \item \textbf{RAM}: Random-Access Memory
+    \item \textbf{REST}: Representational State Transfer
+    \item \textbf{SELinux}: Security-Enhanced Linux
+    \item \textbf{SQL}: Structured Query Language
+    \item \textbf{SSL}: Secure Sockets Layer
+    \item \textbf{UI}: User Interface
+    \item \textbf{URL}: Uniform Resource Locator
+    \item \textbf{YAML}: YAML Ain't Markup Language
+\end{itemize}
+
+\newpage
+% --- Main Content ---
+\pagenumbering{arabic}
+\chapter{INTRODUCTION}
+
+\section{Introduction}
+In the landscape of modern software engineering, the complexity of applications has grown exponentially. Projects often depend on a multitude of services, databases, caching layers, and specific versions of programming languages and libraries. This complexity introduces a significant challenge: maintaining consistency across different developer machines, testing environments, and production deployments. The discrepancy between these environments is a primary source of bugs, integration failures, and deployment delays, famously encapsulated by the phrase, "it works on my machine" \cite{merkel2014docker}.
+
+Containerization technology, pioneered by tools like Docker, has emerged as the definitive solution to this problem. Containers encapsulate an application and all its dependencies—libraries, system tools, code, and runtime—into a single, lightweight, and portable unit. This unit can be reliably run on any machine that supports the containerization platform, ensuring that the application behaves identically regardless of the underlying infrastructure \cite{turnbull2014docker}.
+
+This capstone project leverages containerization to build a powerful, all-in-one development environment. The goal is to provide a "development environment as code," where the entire stack, from the IDE to the databases, is defined in configuration files and can be instantiated with a single command. This approach not only solves the environment consistency problem but also dramatically simplifies the onboarding process for new developers, streamlines collaboration, and mirrors production environments more closely. The core of this project is `code-server`, a version of Microsoft's Visual Studio Code that runs on a remote server and is accessible through a web browser, combined with a suite of essential development services, all running in isolated containers. Furthermore, this project explores both the industry-standard Docker and its rising, daemonless counterpart, Podman, providing a versatile solution that caters to different security and architectural preferences.
+
+\section{Problem Statement}
+The core problem this project addresses is the inefficiency and unreliability inherent in traditional software development workflows. This problem can be broken down into several key areas:
+\begin{enumerate}
+    \item \textbf{Environment Inconsistency:} Developers often set up their local environments manually. This leads to subtle differences in OS versions, dependency versions, and system configurations. These inconsistencies cause bugs that are difficult to reproduce and debug, wasting valuable development time.
+    \item \textbf{Complex Onboarding:} When a new developer joins a team, they can spend days, or even weeks, configuring their machine to match the project's requirements. This process is often poorly documented, error-prone, and a significant barrier to productivity.
+    \item \textbf{Dependency Hell:} Managing dependencies for multiple projects on a single machine can lead to conflicts. One project might require Python 3.8, while another requires Python 3.10. Installing these side-by-side can be complex and can corrupt the system's state.
+    \item \textbf{Development-Production Parity Gap:} The environments where code is written (development) and where it runs (production) are often vastly different. This gap can lead to unexpected failures upon deployment, as the application behaves differently in the production environment.
+    \item \textbf{Lack of Portability:} A development setup created on one operating system (e.g., macOS) may not be easily replicable on another (e.g., Windows or Linux), hindering collaboration in diverse teams.
+\end{enumerate}
+This project aims to provide a definitive solution to these issues by creating a standardized, isolated, and portable development environment using container technology.
+
+\section{Objectives}
+The primary objective of this project is to create a fully functional, container-based development environment that is reproducible, extensible, and easy to use. The specific, measurable, achievable, relevant, and time-bound (SMART) objectives are as follows:
+\begin{itemize}
+    \item \textbf{Main Objective:} To design and implement a multi-service, containerized development environment using Docker Compose and Podman Compose, providing a consistent and isolated workspace for software development.
+    \item \textbf{Secondary Objectives:}
+    \begin{enumerate}
+        \item To containerize a web-based IDE (`code-server`) as the central hub for development activities.
+        \item To integrate and containerize a suite of common backing services, including PostgreSQL, Redis, and MongoDB, ensuring seamless communication between them.
+        \item To implement an Nginx reverse proxy for centralized access and potential SSL termination.
+        \item To ensure data persistence for all stateful services (IDE configuration, project files, databases) using container volumes.
+        \item To create parallel configurations for both Docker Compose and Podman Compose, documenting the key differences and ensuring cross-platform compatibility.
+        \item To develop comprehensive documentation and scripts that allow a developer to set up and run the entire environment with minimal manual intervention.
+        \item To demonstrate the workflow of developing, building, and running a sample application entirely within the containerized environment.
+    \end{enumerate}
+\end{itemize}
+
+\section{Scope and Applications}
+\subsection{Scope}
+The scope of this project is to create and document a local development environment. It includes the following:
+\begin{itemize}
+    \item \textbf{In Scope:}
+    \begin{itemize}
+        \item Configuration of `code-server`, PostgreSQL, Redis, MongoDB, and Nginx containers.
+        \item Creation of `docker-compose.yml` and `podman-compose.yml` files to define and manage the services.
+        \item Implementation of persistent storage for user data, code, and databases via named volumes and bind mounts.
+        \item Configuration of a shared network for inter-container communication.
+        \item A helper script to simplify the startup and shutdown process for the Podman environment.
+        \item Detailed documentation on setup, usage, customization, and troubleshooting.
+    \end{itemize}
+    \item \textbf{Out of Scope:}
+    \begin{itemize}
+        \item Deployment of this environment to a production cloud infrastructure (e.g., Kubernetes, AWS ECS). While the containerized nature facilitates this, production orchestration is a separate, complex domain.
+        \item Automated CI/CD pipeline integration. The project provides the foundation, but does not implement tools like Jenkins or GitLab Runner.
+        \item Advanced security hardening for a production environment, such as implementing a robust secrets management solution (e.g., HashiCorp Vault).
+        \item Performance benchmarking of the containerized services against native installations.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Applications}
+This project has a wide range of practical applications for individual developers, teams, and educational institutions:
+\begin{itemize}
+    \item \textbf{Standardized Team Environments:} Development teams can adopt this project to ensure every member works in an identical, version-controlled environment, eliminating "it works on my machine" issues.
+    \item \textbf{Rapid Developer Onboarding:} New hires can become productive within minutes by simply cloning a repository and running a single command, instead of spending days on manual setup.
+    \item \textbf{Polyglot Development:} Developers working on multiple projects with conflicting dependencies can use this environment to keep each project's dependencies completely isolated.
+    \item \textbf{Educational Workshops and Courses:} Instructors can provide students with a pre-configured environment, ensuring all participants have the same tools and setup, allowing them to focus on learning rather than troubleshooting.
+    \item \textbf{Cloud-Based Development:} The entire environment can be run on a cloud virtual machine, enabling developers to use a powerful, remote development server from any device with a web browser, including low-powered laptops or tablets.
+\end{itemize}
+
+\section{Tools Used}
+The following tools and technologies were instrumental in the development of this project:
+\begin{table}[H]
+    \centering
+    \caption{Key Technologies and Tools Used in the Project}
+    \label{tab:tools}
+    \begin{tabular}{@{}lp{0.7\textwidth}@{}}
+        \toprule
+        \textbf{Tool/Technology} & \textbf{Description and Role} \\
+        \midrule
+        \textbf{Docker} & The leading containerization platform. Used to build, ship, and run the application services in isolated containers. It provides the core engine and tooling. \\
+        \addlinespace
+        \textbf{Docker Compose} & A tool for defining and running multi-container Docker applications. Used to orchestrate the services via a single `docker-compose.yml` file. \cite{docker_compose_docs} \\
+        \addlinespace
+        \textbf{Podman} & A daemonless container engine for developing, managing, and running OCI Containers on Linux systems. Used as an alternative to Docker, with a focus on rootless security. \cite{walsh2020podman} \\
+        \addlinespace
+        \textbf{Podman Compose} & A community-maintained script that implements the Compose specification for Podman. Used to orchestrate the services in the Podman environment. \\
+        \addlinespace
+        \textbf{Code-Server} & A service that runs VS Code on a remote server, accessible through the browser. It serves as the project's central IDE. \cite{codeserver_docs} \\
+        \addlinespace
+        \textbf{Nginx} & A high-performance web server and reverse proxy. Used to manage incoming traffic, route it to the `code-server`, and provide a single entry point for potential SSL termination. \\
+        \addlinespace
+        \textbf{PostgreSQL} & A powerful, open-source object-relational database system. Included as the default relational database for development. \\
+        \addlinespace
+        \textbf{Redis} & An in-memory data structure store, used as a database, cache, and message broker. Provided for applications requiring high-performance caching or session management. \\
+        \addlinespace
+        \textbf{MongoDB} & A source-available cross-platform document-oriented database program. Included as a NoSQL database option for flexible data modeling. \\
+        \addlinespace
+        \textbf{Git \& GitHub} & A distributed version control system and a web-based hosting service. Used for source code management and project collaboration. \\
+        \addlinespace
+        \textbf{YAML} & A human-readable data serialization standard. Used for writing the Docker Compose and Podman Compose configuration files. \\
+        \addlinespace
+        \textbf{Shell Script} & Used to create the `run-podman.sh` helper script to automate and simplify interactions with the Podman environment. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\clearpage
+\chapter{APPLICATION DESIGN}
+
+\section{Architecture}
+The architecture of this containerized development environment is designed based on the principles of modularity, isolation, and service-oriented design. Each component of the development stack is encapsulated within its own container, and they communicate with each other over a defined, private virtual network. This microservices-like approach ensures that services are loosely coupled, can be updated or replaced independently, and do not interfere with each other or the host system.
+
+The overall system architecture is illustrated in Figure \ref{fig:architecture}. The main components are:
+\begin{enumerate}
+    \item \textbf{Host System:} The underlying machine (Linux, macOS, or Windows) where the container engine (Docker or Podman) is installed. The host system's only role is to run the container runtime.
+    \item \textbf{Container Engine:} Either Docker or Podman, which is responsible for managing the lifecycle of all containers, networks, and volumes.
+    \item \textbf{Nginx Reverse Proxy (Entry Point):} The Nginx container acts as the primary gateway to the environment. It listens on standard web ports (80 for HTTP and 443 for HTTPS) on the host machine. Its responsibility is to route incoming user traffic to the appropriate internal service, primarily the `code-server`. This design abstracts the internal port structure and provides a single, stable entry point. It is also the ideal place to handle SSL/TLS termination, ensuring secure communication.
+    \item \textbf{Code-Server (Core IDE):} This is the central component where the developer interacts with their code. It runs a full-featured VS Code instance accessible via a web browser. It is configured to persist user settings, extensions, and project files on the host system via bind mounts, ensuring the developer's workspace is preserved across sessions.
+    \item \textbf{Backing Services:} A suite of optional but essential services that typical web applications rely on:
+        \begin{itemize}
+            \item \textbf{PostgreSQL:} A container running the PostgreSQL database server.
+            \item \textbf{Redis:} A container running the Redis in-memory server.
+            \item \textbf{MongoDB:} A container running the MongoDB NoSQL database.
+        \end{itemize}
+        These services are not exposed directly to the host machine's network by default. They are only accessible by other containers within the same private network (e.g., `code-server`).
+    \item \textbf{Private Bridge Network (`dev-network`):} All containers are attached to a custom bridge network. This network provides a private, isolated subnet for the services. Critically, it enables DNS resolution based on service names. For instance, the `code-server` container can connect to the PostgreSQL database simply by using the hostname `postgres`, without needing to know its internal IP address.
+    \item \textbf{Persistent Storage (Volumes):} To prevent data loss when containers are stopped or removed, persistent storage is implemented using Docker/Podman volumes. Named volumes are used for database data (`postgres-data`, `redis-data`, `mongodb-data`), which are managed by the container engine. Bind mounts are used for project files (`./projects`) and IDE configuration (`./config`), allowing direct access and editing from the host machine if needed.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=1.0\textwidth]{images/architecture_diagram.png}
+    \caption{System Architecture Diagram. (Placeholder: Create an image named architecture_diagram.png in an 'images' folder)}
+    \label{fig:architecture}
+    \caption*{This diagram illustrates the flow of user requests through the Nginx reverse proxy to the core `code-server` IDE. The IDE container can then communicate with various backing services (PostgreSQL, Redis, MongoDB) over a private, isolated container network. Persistent data is managed via volumes and bind mounts to the host filesystem.}
+\end{figure}
+
+This architecture provides a clean separation of concerns. The Nginx layer handles external access and security, the `code-server` provides the development workspace, and the backing services provide the necessary data stores, all while being completely isolated from the host system and each other, except through the explicitly defined network.
+
+\section{Module Design}
+Each service defined in the `docker-compose.yml` and `podman-compose.yml` files can be considered a self-contained module. The design of each module specifies its base image, configuration, networking, and data persistence strategy. The use of YAML anchors (e.g., `x-service-defaults` in `podman-compose.yml`) is a key design choice that promotes the DRY (Don't Repeat Yourself) principle, making the configuration more maintainable and readable \cite{martin2008clean}.
+
+\subsection{Code-Server Module}
+\begin{itemize}
+    \item \textbf{Purpose:} To provide a rich, browser-based VS Code IDE.
+    \item \textbf{Base Image:} `codercom/code-server:latest`. This is the official image, ensuring up-to-date features and security patches.
+    \item \textbf{Configuration (Environment Variables):}
+    \begin{itemize}
+        \item `PASSWORD`: Sets the login password for the IDE. This is parameterized using an `.env` file for security.
+        \item `SUDO_PASSWORD`: Sets the password for the `sudo` command inside the container, allowing the user to install system-level packages if needed.
+        \item `PUID`/`PGID`: User and Group ID. These are set to `1000` to map the internal container user to the default host user, preventing file permission issues on bind-mounted volumes.
+        \item `TZ`: Sets the timezone to ensure correct timestamps in logs and applications.
+    \end{itemize}
+    \item \textbf{Ports:} Exposes port `8080` of the container to port `8080` on the host, making the IDE accessible at `http://localhost:8080`.
+    \item \textbf{Volumes (Data Persistence):}
+    \begin{itemize}
+        \item `./config:/home/coder/.config`: A bind mount for persisting all VS Code settings, extensions, and user preferences.
+        \item `./projects:/home/coder/projects`: A bind mount for the actual source code, allowing developers to edit files using their host editor as well if they choose.
+        \item `/var/run/docker.sock:/var/run/docker.sock` (Docker only): This critical mount allows the `code-server` container to communicate with the host's Docker daemon, enabling "Docker-in-Docker" functionality. This is intentionally omitted in the Podman version for security and compatibility reasons.
+    \end{itemize}
+    \item \textbf{Healthcheck:} A command is configured to periodically check if the `code-server` web interface is responsive. This allows other services (like Nginx) to wait until the IDE is fully ready before starting.
+\end{itemize}
+
+\subsection{Database Modules (PostgreSQL, Redis, MongoDB)}
+The design for all database modules follows a similar pattern, emphasizing data safety and isolation.
+\begin{itemize}
+    \item \textbf{Purpose:} To provide persistent data storage for applications developed within the environment.
+    \item \textbf{Base Images:} Official Alpine-based images (`postgres:15-alpine`, `redis:7-alpine`, `mongo:6`) are used. Alpine images are very lightweight, which reduces disk usage and potential attack surface.
+    \item \textbf{Configuration:} Environment variables are used to set up initial users, passwords, and databases (e.g., `POSTGRES_USER`, `POSTGRES_PASSWORD`). These are sourced from an `.env` file to avoid hardcoding credentials.
+    \item \textbf{Ports:} Ports are exposed to the host (`5432:5432`, etc.) for convenience, allowing developers to connect to the databases using local GUI tools if desired. In a stricter setup, these port mappings could be removed to ensure access is only possible from within the container network.
+    \item \textbf{Volumes:} This is the most critical part of the database module design. Named volumes (`postgres-data`, `redis-data`, `mongodb-data`) are used. Named volumes are fully managed by the container engine and are the recommended way to persist database data. They are more portable and easier to back up than bind mounts for this use case.
+    \item \textbf{Healthchecks:} Each database has a specific healthcheck. For PostgreSQL, it's `pg_isready`. For Redis, it's `redis-cli ping`. For MongoDB, it's a `ping` command via `mongosh`. These checks ensure the database is not just running, but is ready to accept connections.
+\end{itemize}
+
+\subsection{Nginx Reverse Proxy Module}
+\begin{itemize}
+    \item \textbf{Purpose:} To act as a single, stable entry point to the environment, routing traffic and handling SSL.
+    \item \textbf{Base Image:} `nginx:alpine`. A minimal and secure base for a reverse proxy.
+    \item \textbf{Configuration:} The Nginx configuration is not built into the image. Instead, a local `nginx.conf` file is bind-mounted into the container at `/etc/nginx/nginx.conf:ro`. The `:ro` (read-only) flag is a security best practice, preventing the container from modifying its own configuration.
+    \item \textbf{Ports:} Binds to ports `80` and `443` on the host, the standard ports for web traffic.
+    \item \textbf{Volumes:}
+    \begin{itemize}
+        \item `./nginx/nginx.conf:/etc/nginx/nginx.conf:ro,Z`: Mounts the configuration file. The `:Z` label in the Podman version is crucial for SELinux systems, as it relabels the file so the container can read it.
+        \item `./nginx/ssl:/etc/nginx/ssl:ro,Z`: Mounts a directory for SSL certificates, also as read-only.
+    \end{itemize}
+    \item \textbf{Dependencies:} The `depends_on` directive with `condition: service_healthy` ensures that Nginx will not start until the `code-server` has passed its healthcheck. This prevents Nginx from starting and immediately returning `502 Bad Gateway` errors while the IDE is still initializing.
+\end{itemize}
+
+This modular design, defined declaratively in YAML, makes the entire system transparent, version-controllable, and easy to modify. Adding a new service is as simple as adding another module definition to the compose file.
+
+\clearpage
+\chapter{CONTAINERIZING THE APPLICATION}
+Containerizing an application involves creating a self-contained, executable package—a container image—that includes everything needed to run it: the code, a runtime, system tools, system libraries, and settings. This chapter provides a detailed, step-by-step guide to this process, from writing a container definition file to building, running, and distributing the resulting image. While the project itself focuses on containerizing a development \textit{environment}, the principles demonstrated here apply to containerizing a specific application that would be developed \textit{within} that environment.
+
+For this demonstration, we will consider a simple Node.js web application.
+
+\section{Container File (STEP BY STEP PROCEDURE WITH SNAPSHOTS)}
+The blueprint for creating a container image is the `Dockerfile`. It is a text document that contains all the commands a user could call on the command line to assemble an image. The following is a detailed breakdown of a well-structured, multi-stage `Dockerfile` for a Node.js application. Multi-stage builds are a best practice for creating lean, secure production images by separating the build-time dependencies from the runtime environment \cite{turnbull2014docker}.
+
+\begin{lstlisting}[language=Dockerfile, caption={Example Multi-stage Dockerfile for a Node.js Application}, label=list:dockerfile]
+# ===== Stage 1: Build Stage =====
+# Use an official Node.js image that includes build tools.
+# The "-alpine" tag uses a lightweight Linux distribution.
+FROM node:18-alpine AS build
+
+# Set the working directory inside the container.
+WORKDIR /app
+
+# Copy package.json and package-lock.json first to leverage Docker's layer caching.
+# This step is only re-run if these files change.
+COPY package*.json ./
+
+# Install project dependencies.
+RUN npm install
+
+# Copy the rest of the application source code into the container.
+COPY . .
+
+# Run the build command (e.g., for a React/Vue/Angular app).
+RUN npm run build
+
+# ===== Stage 2: Production Stage =====
+# Start from a fresh, lightweight base image for the final product.
+FROM node:18-alpine
+
+# Set the working directory.
+WORKDIR /app
+
+# Copy only the necessary files from the 'build' stage.
+# This includes the built application and the production node_modules.
+COPY --from=build /app/build ./build
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
+
+# Expose the port the application will run on.
+EXPOSE 3000
+
+# The command to run the application when the container starts.
+CMD ["npm", "start"]
+\end{lstlisting}
+
+\subsubsection{Step-by-Step Explanation}
+
+\begin{enumerate}
+    \item \textbf{Stage 1 - The Build Environment (`AS build`):}
+    \begin{itemize}
+        \item \textbf{Line 3: `FROM node:18-alpine AS build`}: This instruction initializes a new build stage named `build`. It pulls the official `node:18-alpine` image from Docker Hub. This image contains the Node.js runtime, npm, and all the necessary tools to install dependencies and build our application.
+        \item \textbf{Line 6: `WORKDIR /app`}: This sets the working directory for subsequent commands. If the directory doesn't exist, it will be created. This is where our application code will reside inside the container.
+        \item \textbf{Line 9: `COPY package*.json ./`}: This is a crucial optimization step. We copy the `package.json` and `package-lock.json` files first. Docker builds images in layers. If these files haven't changed since the last build, Docker will reuse the cached layer from the next step, saving significant time.
+        \begin{figure}[H]
+            \centering
+            % \includegraphics[width=0.7\textwidth]{images/dockerfile_step1.png}
+            \caption{Dockerfile: Copying package manifests. (Placeholder)}
+            \label{fig:docker_step1}
+        \end{figure}
+        \item \textbf{Line 12: `RUN npm install`}: This executes the command to install all dependencies defined in `package.json`. This creates a `node_modules` directory inside the container.
+        \item \textbf{Line 15: `COPY . .`}: After dependencies are installed, we copy the rest of our application's source code into the `/app` directory.
+        \item \textbf{Line 18: `RUN npm run build`}: This command executes the build script defined in `package.json`. For many front-end frameworks, this transpiles JavaScript/TypeScript and bundles assets into a static `build` or `dist` directory.
+    \end{itemize}
+
+    \item \textbf{Stage 2 - The Production Environment:}
+    \begin{itemize}
+        \item \textbf{Line 21: `FROM node:18-alpine`}: We start a new stage from the same lightweight base image. This ensures our final image does not contain any of the build-time dependencies or source code (like test files, linters, etc.), making it smaller and more secure.
+        \item \textbf{Line 24: `WORKDIR /app`}: Again, we set the working directory.
+        \item \textbf{Lines 28-30: `COPY --from=build ...`}: These are the key instructions of the multi-stage build. The `--from=build` flag tells Docker to copy files from the previous stage named `build`. We selectively copy only the artifacts needed to run the application: the `build` directory, the production `node_modules`, and the `package.json`.
+        \begin{figure}[H]
+            \centering
+            % \includegraphics[width=0.7\textwidth]{images/dockerfile_step2.png}
+            \caption{Dockerfile: Copying artifacts from the build stage. (Placeholder)}
+            \label{fig:docker_step2}
+        \end{figure}
+        \item \textbf{Line 33: `EXPOSE 3000`}: This instruction informs Docker that the container listens on the specified network port at runtime. It's primarily for documentation and doesn't actually publish the port.
+        \item \textbf{Line 36: `CMD ["npm", "start"]`}: This specifies the default command to execute when the container starts. It will run the application's start script. There can only be one `CMD` instruction in a `Dockerfile`.
+    \end{itemize}
+\end{enumerate}
+
+\section{Build and Test the Container}
+Once the `Dockerfile` is created, the next step is to build the image and then run a container from it to test if it works as expected.
+
+\subsubsection{Building the Image}
+The `docker build` command is used to create a container image from a `Dockerfile`.
+\begin{lstlisting}[language=bash, caption={Building a Docker Image}]
+# Navigate to the directory containing the Dockerfile and source code
+cd /path/to/your/project
+
+# Execute the build command
+# -t : tags the image with a name and optional tag (e.g., myapp:1.0)
+# .  : specifies the build context (the current directory)
+docker build -t my-node-app:latest .
+\end{lstlisting}
+During the build process, Docker will execute each instruction in the `Dockerfile` sequentially, creating a new layer for each one. The output will show the progress of each step. If successful, the image `my-node-app:latest` will be available in the local image cache. You can verify this by running `docker images`.
+
+\subsubsection{Testing the Container}
+To test the newly built image, we use the `docker run` command to start a container.
+\begin{lstlisting}[language=bash, caption={Running a Container for Testing}]
+# Run a container from the image
+# -d : runs the container in detached mode (in the background)
+# -p : publishes a port, mapping host port 8080 to container port 3000
+# --name : assigns a memorable name to the container
+docker run -d -p 8080:3000 --name test-app my-node-app:latest
+\end{lstlisting}
+After running this command, the container will be running in the background. We can perform several checks to ensure it is working correctly:
+\begin{enumerate}
+    \item \textbf{Check Container Status:} Use `docker ps` to see if the container is running.
+    \begin{lstlisting}[language=bash, caption={Checking Running Containers}]
+$ docker ps
+CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                    NAMES
+a1b2c3d4e5f6   my-node-app:latest     "docker-entrypoint.s..."   5 seconds ago    Up 4 seconds    0.0.0.0:8080->3000/tcp   test-app
+    \end{lstlisting}
+    \item \textbf{Check Logs:} Use `docker logs` to view the application's output and check for any startup errors.
+    \begin{lstlisting}[language=bash, caption={Viewing Container Logs}]
+docker logs test-app
+    \end{lstlisting}
+    \item \textbf{Test Functionality:} Since we mapped port 8080, we can access the application from our host machine's browser at `http://localhost:8080` or use a command-line tool like `curl`.
+    \begin{lstlisting}[language=bash, caption={Testing with cURL}]
+$ curl http://localhost:8080
+Hello, World! 
+    \end{lstlisting}
+\end{enumerate}
+If the application responds correctly, the container image has been successfully built and tested.
+
+\section{Run and Manage Containers}
+While `docker run` is suitable for single containers, complex applications with multiple services are best managed with Docker Compose or Podman Compose. These tools use a YAML file to configure all the application's services, networks, and volumes, allowing for one-command management.
+
+Using the project's `docker-compose.yml` file:
+\begin{itemize}
+    \item \textbf{Start all services:}
+    \begin{lstlisting}[language=bash]
+docker-compose up -d
+    \end{lstlisting}
+    The `-d` flag runs the containers in detached mode. Docker Compose will create the network, volumes, and start all defined services in the correct order based on `depends_on` clauses.
+
+    \item \textbf{View status of services:}
+    \begin{lstlisting}[language=bash]
+docker-compose ps
+    \end{lstlisting}
+    This command lists all containers associated with the project and shows their current state (e.g., `Up`, `Exited`).
+
+    \item \textbf{View logs:}
+    \begin{lstlisting}[language=bash]
+# View logs for all services
+docker-compose logs -f
+
+# View logs for a specific service (e.g., code-server)
+docker-compose logs -f code-server
+    \end{lstlisting}
+    The `-f` flag follows the log output, similar to `tail -f`.
+
+    \item \textbf{Execute a command in a running container:}
+    \begin{lstlisting}[language=bash]
+# Open a shell inside the postgres container
+docker-compose exec postgres bash
+    \end{lstlisting}
+    The `exec` command is invaluable for debugging, allowing you to inspect a container's filesystem or run diagnostic tools from within it.
+
+    \item \textbf{Stop and remove services:}
+    \begin{lstlisting}[language=bash]
+# Stops and removes containers, networks
+docker-compose down
+
+# Stops and removes containers, networks, AND volumes
+docker-compose down -v
+    \end{lstlisting}
+    Using `docker-compose down` is the proper way to clean up the environment created by `docker-compose up`. The `-v` flag is important if you want to remove the named volumes and delete all persisted data.
+\end{itemize}
+
+\section{Use Container Lifecycle Operations}
+A container goes through several states in its lifecycle, from creation to destruction. Understanding and managing this lifecycle is fundamental to working with container technology.
+
+\begin{figure}[H]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{images/container_lifecycle.png}
+    \caption{The Container Lifecycle. (Placeholder)}
+    \label{fig:lifecycle}
+\end{figure}
+
+The primary states and the commands to manage them are:
+\begin{itemize}
+    \item \textbf{Created:} A container is in the `created` state after a `docker create` command or the initial phase of `docker run`. It has a filesystem layer and is ready to be started, but is not yet running.
+    
+    \item \textbf{Running:} The `running` state is the normal, active state of a container. It is started with `docker start` or `docker run`. Commands to manage running containers include:
+        \begin{itemize}
+            \item `docker stop [container_id]`: Sends a SIGTERM signal to the main process in the container, allowing for a graceful shutdown. If the process doesn't stop within a grace period (default 10 seconds), a SIGKILL is sent.
+            \item `docker pause [container_id]`: Suspends all processes in the container using cgroups freezer. This "freezes" the container in its current state.
+            \item `docker unpause [container_id]`: Resumes the processes in a paused container.
+            \item `docker restart [container_id]`: A convenient command that stops and then starts the container.
+        \end{itemize}
+
+    \item \textbf{Exited:} A container enters the `exited` state when its main process terminates. This can be due to the process finishing its task, encountering an error, or receiving a `stop` command. An exited container still exists and its filesystem can be inspected, but it is not running.
+    
+    \item \textbf{Removal:} Once a container is no longer needed, it can be removed with `docker rm [container_id]`. This permanently deletes the container, including its writable layer. The underlying image and any associated volumes are not removed by this command.
+\end{itemize}
+These lifecycle operations provide fine-grained control over application services, enabling tasks like zero-downtime updates (by starting a new container before stopping the old one) and safe data migrations.
+
+\section{Upload in GitHub Repository}
+Version control is essential for any software project, including the configuration files for a containerized environment. Storing the `Dockerfile`, `docker-compose.yml`, source code, and other configuration assets in a Git repository like GitHub is a critical step.
+
+The standard workflow is as follows:
+\begin{enumerate}
+    \item \textbf{Initialize Git Repository:} If not already a Git repository, initialize it in the project's root directory.
+    \begin{lstlisting}[language=bash]
+git init
+    \end{lstlisting}
+
+    \item \textbf{Create a `.gitignore` file:} This is a crucial step to prevent committing unnecessary or sensitive files to the repository. For this project, it should include:
+    \begin{lstlisting}[language=bash, caption={Example .gitignore file}]
+# Dependencies
+node_modules/
+
+# Build artifacts
+build/
+dist/
+
+# Environment variables
+.env
+
+# IDE and OS-specific files
+.vscode/
+.DS_Store
+
+# Persistent data (if bind mounted in a subdirectory)
+config/
+postgres-data/
+    \end{lstlisting}
+    \textit{Note: The `.env` file should never be committed to a public repository as it contains secrets.}
+
+    \item \textbf{Add and Commit Files:} Stage the relevant project files and commit them with a descriptive message.
+    \begin{lstlisting}[language=bash]
+git add .
+git commit -m "feat: Initial setup of containerized dev environment"
+    \end{lstlisting}
+
+    \item \textbf{Push to GitHub:} Link the local repository to a remote repository on GitHub and push the changes.
+    \begin{lstlisting}[language=bash]
+git remote add origin https://github.com/your-username/your-repo.git
+git branch -M main
+git push -u origin main
+    \end{lstlisting}
+\end{enumerate}
+
+\section{Push the Container in Registry}
+While a `Dockerfile` in GitHub allows others to build the image, distributing the pre-built image itself via a container registry is much more efficient. A registry is a storage and distribution system for container images. Docker Hub is the default public registry, but private registries are also available from cloud providers (AWS ECR, GCP GCR) or can be self-hosted.
+
+The process involves three steps:
+\begin{enumerate}
+    \item \textbf{Login to the Registry:} Authenticate your Docker client with the container registry.
+    \begin{lstlisting}[language=bash]
+# For Docker Hub
+docker login
+
+# For other registries, you may need to provide the server URL
+# docker login my-private-registry.com
+    \end{lstlisting}
+
+    \item \textbf{Tag the Image:} An image must be tagged with the registry's hostname and your username/organization name before it can be pushed.
+    \begin{lstlisting}[language=bash]
+# Format: docker tag LOCAL_IMAGE:TAG REGISTRY/USERNAME/IMAGE:TAG
+docker tag my-node-app:latest yourdockerhubusername/my-node-app:latest
+docker tag my-node-app:latest yourdockerhubusername/my-node-app:1.0.0
+    \end{lstlisting}
+    It is a best practice to use both a `latest` tag and a specific version tag.
+
+    \item \textbf{Push the Image:} Use the `docker push` command to upload the tagged image to the registry.
+    \begin{lstlisting}[language=bash]
+docker push yourdockerhubusername/my-node-app:latest
+docker push yourdockerhubusername/my-node-app:1.0.0
+    \end{lstlisting}
+\end{enumerate}
+Once pushed, anyone with access can pull and run the exact same image using `docker pull yourdockerhubusername/my-node-app:latest`, ensuring perfect consistency across all environments.
+
+\clearpage
+\chapter{CHALLENGES FACED \& SOLUTIONS}
+Developing a robust, multi-service, and cross-platform containerized environment presented several technical challenges. This chapter outlines the most significant hurdles encountered during the project and the strategies and solutions implemented to overcome them.
+
+\subsection{Challenge 1: Docker vs. Podman Compatibility}
+\begin{itemize}
+    \item \textbf{Problem:} While Podman aims for CLI compatibility with Docker, they have fundamental architectural differences. Docker uses a long-running daemon process, whereas Podman is daemonless. This leads to several incompatibilities, particularly with Docker Compose and tools that expect to find a Docker socket (`/var/run/docker.sock`). The original `docker-compose.yml` file, with its Docker socket mount and specific healthcheck syntax, would not work out-of-the-box with `podman-compose`.
+
+    \item \textbf{Solution:} Instead of attempting a single, overly complex configuration file that tries to cater to both, a dual-file approach was adopted.
+    \begin{enumerate}
+        \item \textbf{Separate Compose Files:} A dedicated `podman-compose.yml` was created. This file was tailored for Podman by:
+            \begin{itemize}
+                \item Removing the Docker socket mount from the `code-server` service, as "Podman-in-Podman" requires a different approach.
+                \item Adding the `:Z` or `:z` suffix to bind mounts (e.g., `./config:/home/coder/.config:Z`). This is essential for systems with SELinux (common in RHEL/Fedora-based systems where Podman is prevalent) to relabel the host directory so the container has permission to read/write to it.
+                \item Adjusting the syntax of some healthcheck tests to be more shell-agnostic, as Podman's execution environment can be subtly different.
+                \item Using YAML anchors (`x-service-defaults`) to reduce duplication and make the Podman file more maintainable.
+            \end{itemize}
+        \item \textbf{Helper Script:} A shell script, `run-podman.sh`, was created to abstract away the complexities of running the environment with Podman. This script automatically detects if `podman-compose` or the newer `podman compose` command is available, checks if the Podman service is running, and provides simple commands (`up`, `down`, `logs`) for the user. It also includes helpful warnings, such as notifying rootless users that they cannot bind to privileged ports below 1024.
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Challenge 2: Data Persistence and State Management}
+\begin{itemize}
+    \item \textbf{Problem:} Containers are, by design, ephemeral. If a container is removed, any data written to its filesystem is lost. This is unacceptable for databases, user configurations, and source code. A strategy was needed to persist data outside the container's lifecycle.
+
+    \item \textbf{Solution:} The project employed two types of persistent storage, chosen based on the type of data being stored:
+    \begin{enumerate}
+        \item \textbf{Named Volumes:} For all database services (PostgreSQL, Redis, MongoDB) and other application-managed data (like Portainer's config), named volumes were used. For example, `postgres-data:/var/lib/postgresql/data`. This is the recommended approach for stateful application data because:
+            \begin{itemize}
+                \item Volumes are managed by the container engine (Docker/Podman), making them platform-independent.
+                \item They can be easily listed, backed up, and migrated.
+                \item They perform better for heavy I/O workloads compared to bind mounts from a host OS.
+            \end{itemize}
+        \item \textbf{Bind Mounts:} For project source code (`./projects`) and IDE configuration files (`./config`), bind mounts were used. This approach maps a directory from the host filesystem directly into the container. This was chosen for these specific use cases because:
+            \begin{itemize}
+                \item It allows the developer to use their preferred tools on the host system (e.g., another editor, file manager, Git GUI) to interact with the project files directly.
+                \item Changes made to the code on the host are immediately reflected inside the container, and vice versa, which is ideal for development.
+            \end{itemize}
+    \end{enumerate}
+    By carefully choosing the right type of storage for each service, the solution achieves both data safety for services and flexibility for the developer's workflow.
+\end{itemize}
+
+\subsection{Challenge 3: Inter-Container Networking and Service Discovery}
+\begin{itemize}
+    \item \textbf{Problem:} In a multi-container application, services need to communicate with each other. For example, the `code-server` needs to connect to the `postgres` database. Hardcoding IP addresses is not viable, as container IPs can change whenever the environment is restarted. A reliable service discovery mechanism was required.
+
+    \item \textbf{Solution:} Docker Compose and Podman Compose provide a simple yet powerful solution through custom networks.
+    \begin{enumerate}
+        \item \textbf{Custom Bridge Network:} A custom bridge network named `dev-network` was defined in the compose files. All services were configured to attach to this network.
+        \item \textbf{DNS-Based Service Discovery:} When containers are attached to a custom bridge network, the container engine provides an internal DNS resolver. This resolver allows any container to find any other container on the same network using its service name as a hostname.
+    \end{enumerate}
+    This means the application code running inside `code-server` can connect to PostgreSQL using the connection string `postgresql://devuser:devpass@postgres:5432/devdb`. The hostname `postgres` is automatically resolved by the container engine to the current internal IP address of the PostgreSQL container. This decouples the services and makes the application configuration portable and robust \cite{tanenbaum2011computer}.
+
+\subsection{Challenge 4: Ensuring a Consistent and Optimized Build Process}
+\begin{itemize}
+    \item \textbf{Problem:} Creating a `Dockerfile` is easy, but creating a good `Dockerfile` is hard. An initial, naive `Dockerfile` might be very large, insecure, and slow to build. For example, copying the entire project directory before running `npm install` would break layer caching on every code change, forcing a full dependency reinstall. Furthermore, including build tools and development dependencies in the final image would bloat its size and increase its attack surface.
+
+    \item \textbf{Solution:} The project adopted and documented two key best practices for building container images, as demonstrated in Chapter 3:
+    \begin{enumerate}
+        \item \textbf{Leveraging Layer Caching:} The `Dockerfile` was structured to place instructions that change less frequently (like dependency installation) before instructions that change more frequently (like copying source code). By copying `package.json` and running `npm install` first, Docker can reuse these layers as long as the dependencies have not changed, leading to significantly faster rebuilds during development.
+        \item \textbf{Multi-Stage Builds:} A multi-stage build was used to create a lean final image. The first stage (`build` stage) used a full Node.js image with all the tools needed to compile the application and install `devDependencies`. The second, final stage started from a clean, lightweight base image and copied \textit{only} the necessary compiled artifacts and production dependencies from the first stage. This resulted in a final image that was a fraction of the size of the build environment and contained only what was strictly necessary to run the application, improving both security and performance.
+    \end{enumerate}
+\end{itemize}
+These solutions demonstrate a deep understanding of containerization principles, moving beyond a basic setup to create an environment that is robust, efficient, and developer-friendly.
+
+\clearpage
+\chapter{CONCLUSION}
+This capstone project successfully achieved its primary objective of designing and implementing a comprehensive, containerized development environment that is reproducible, portable, and extensible. By leveraging industry-standard tools like Docker, Docker Compose, and Podman, the project provides a definitive solution to the pervasive "it works on my machine" problem, thereby enhancing developer productivity and streamlining the software development lifecycle.
+
+The final system delivers a complete "development environment as code". The entire multi-service stack—comprising a browser-based VS Code IDE, relational and NoSQL databases, a caching layer, and a reverse proxy—is declaratively defined in version-controlled configuration files. This allows any developer to instantiate an identical, fully-functional workspace with a single command, drastically reducing onboarding time and eliminating environment-related bugs. The modular architecture ensures that the system is easy to maintain and customize, allowing teams to add or replace services to fit the specific needs of their projects.
+
+A significant contribution of this project is its dual support for both Docker and Podman. By providing parallel compose files and a helper script for Podman, the project caters to a wider audience, including those who prefer Podman's daemonless and rootless architecture for enhanced security. The investigation into the compatibility challenges between the two platforms and the implementation of specific solutions, such as the use of SELinux labels (`:Z`), demonstrates a thorough and practical understanding of the modern container ecosystem.
+
+The detailed exploration of containerization best practices, including optimized Dockerfile construction with multi-stage builds and strategic use of volumes for data persistence, ensures that the resulting environment is not only functional but also efficient and secure. The project serves as both a practical tool and an educational resource, documenting the entire process from application design to container lifecycle management and distribution via public registries.
+
+\subsection{Future Work}
+While the project provides a solid foundation, there are several avenues for future enhancement:
+\begin{itemize}
+    \item \textbf{CI/CD Integration:} The environment could be extended to include a CI/CD service like Jenkins or a GitLab Runner container, allowing for the creation of a complete, self-hosted development and automation platform.
+    \item \textbf{Kubernetes Deployment:} Configuration files (e.g., Helm charts or Kustomize overlays) could be developed to deploy this environment onto a Kubernetes cluster, transforming it from a local development tool into a scalable, cloud-native remote development platform for entire teams.
+    \item \textbf{Enhanced Security:} Further security hardening could be implemented, such as integrating a secrets management tool like HashiCorp Vault for handling credentials instead of using `.env` files, and implementing stricter network policies.
+    \item \textbf{Custom Base Images:} For even faster startup and a smaller footprint, custom base images could be created for the `code-server` with common extensions and tools pre-installed, rather than relying on post-launch setup.
+\end{itemize}
+
+In conclusion, this project successfully demonstrates the power and flexibility of containerization as a solution to modern development challenges. The resulting artifact is a valuable tool that can be immediately applied to improve development workflows, foster collaboration, and bridge the gap between development and production.
+
+\clearpage
+% --- References ---
+\printbibliography
+
+\end{document}

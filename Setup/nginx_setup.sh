@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+
 app_port=80
 domain="example.com"
 list_of_subdomains=("www" "api" "blog")

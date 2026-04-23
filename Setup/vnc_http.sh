@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 #################################################################
 # VNC + XFCE + HTTP Auth Complete Setup Script for OCI Ubuntu

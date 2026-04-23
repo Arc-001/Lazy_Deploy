@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Customize your application port here
 APP_PORT=8000

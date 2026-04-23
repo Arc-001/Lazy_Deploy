@@ -1,3 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
 echo "Updateing for candidate packages..."
 
 sudo apt-get update -y

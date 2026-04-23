@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 echo "Setting up sudo docker"
 chmod +x docker_setup.sh
